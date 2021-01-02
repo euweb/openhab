@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.modbus.internal;
 
@@ -28,7 +32,7 @@ public class WriteRegistersTestParameters extends TestCaseSupport {
 
     @Parameters
     public static List<Object[]> parameters() {
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         generateWriteInt16SameValueAsBefore(parameters);
         generateNumberItemInt16(parameters);
         generateSwitchItemInt16(parameters);
@@ -280,7 +284,7 @@ public class WriteRegistersTestParameters extends TestCaseSupport {
                 // ModbusBindingProvider.VALUE_TYPE_INT8,
                 // ModbusBindingProvider.VALUE_TYPE_UINT8,
                 // ModbusBindingProvider.VALUE_TYPE_BIT,
-        }, new Command[] { new DecimalType(5.0) }));
+                }, new Command[] { new DecimalType(5.0) }));
     }
 
     /**
@@ -309,7 +313,7 @@ public class WriteRegistersTestParameters extends TestCaseSupport {
     public static List<Object[]> generateParameters(short[] initialRegisters, State itemInitialState,
             short[] expectedValue, boolean expectingAssertionError, String[] types, String[] valueTypes,
             Command... commands) {
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         for (ServerType serverType : TestCaseSupport.TEST_SERVERS) {
             for (boolean nonZeroOffset : new Boolean[] { true, false }) {
                 for (Command command : commands) {

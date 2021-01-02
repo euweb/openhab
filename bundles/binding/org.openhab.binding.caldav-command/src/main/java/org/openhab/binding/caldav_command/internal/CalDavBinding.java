@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.caldav_command.internal;
 
@@ -13,6 +17,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -40,9 +45,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of the caldav command binding.
  * Every event which is loaded from the server can be triggered with 4 notifications.
- * <br/>
+ *
  * All events which are loaded must fulfill a name syntax for the description.
- * All other fields of a event are free to choose.
+ * All other fields of an event are free to choose.
  *
  * <pre>
  * Sample configuration for event description:
@@ -51,7 +56,6 @@ import org.slf4j.LoggerFactory;
  * => Meaning: when the event starts the heater turns on to 23 and when the event ends
  * it turns back to 16
  *
- * <br/>
  * Sample configuration for event description:
  * BEGIN:Kitchen_Music:ON
  * END:Kitchen_Music:OFF
@@ -72,17 +76,11 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
     private static final String KEY_DEFAULT_ITEM_ON_BEGIN = "defaultItemOnBegin";
 
     private static final Logger logger = LoggerFactory.getLogger(CalDavBinding.class);
-
     private ItemRegistry itemRegistry;
-
     private CalDavLoader calDavLoader;
-
     private List<String> readCalendars = new ArrayList<String>();
-
     private List<String> disabledItems = new ArrayList<String>();
-
     private String defaultItemOnBegin;
-
     private boolean calendarReloaded;
 
     public CalDavBinding() {
@@ -124,19 +122,21 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-        if (properties != null) {
-            logger.debug("reading configuration data...");
-            String read = (String) properties.get(KEY_READ_CALENDARS);
-            this.readCalendars.clear();
-            if (read != null) {
-                for (String value : read.split(",")) {
-                    this.readCalendars.add(value.trim());
-                }
-            }
-            read = (String) properties.get(KEY_DEFAULT_ITEM_ON_BEGIN);
-            this.defaultItemOnBegin = read == null ? null : read.trim();
-            this.reloadCurrentLoadedEvents();
+        if (properties == null) {
+            return;
         }
+
+        logger.debug("reading configuration data...");
+        String read = Objects.toString(properties.get(KEY_READ_CALENDARS), null);
+        this.readCalendars.clear();
+        if (read != null) {
+            for (String value : read.split(",")) {
+                this.readCalendars.add(value.trim());
+            }
+        }
+        read = Objects.toString(properties.get(KEY_DEFAULT_ITEM_ON_BEGIN), null);
+        this.defaultItemOnBegin = read == null ? null : read.trim();
+        this.reloadCurrentLoadedEvents();
     }
 
     @Override

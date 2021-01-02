@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.modbus.internal;
 
@@ -45,7 +49,7 @@ public class ReadCoilsAndDiscreteTestCase extends TestCaseSupport {
 
     @Parameters
     public static Collection<Object[]> parameters() {
-        List<Object[]> allParameters = new ArrayList<Object[]>();
+        List<Object[]> allParameters = new ArrayList<>();
         List<Object[]> baseParameters = Arrays.asList(new Object[][] {
                 { false, ModbusBindingProvider.TYPE_COIL, SimpleDigitalOut.class, "addDigitalOut", DigitalOut.class },
                 { true, ModbusBindingProvider.TYPE_COIL, SimpleDigitalOut.class, "addDigitalOut", DigitalOut.class },
@@ -54,7 +58,7 @@ public class ReadCoilsAndDiscreteTestCase extends TestCaseSupport {
                         DigitalIn.class } });
         for (ServerType serverType : TEST_SERVERS) {
             for (Object[] params : baseParameters) {
-                ArrayList<Object> paramsWithServer = new ArrayList<Object>();
+                ArrayList<Object> paramsWithServer = new ArrayList<>();
                 paramsWithServer.add(serverType);
                 paramsWithServer.addAll(Arrays.asList(params));
                 allParameters.add(paramsWithServer.toArray());
@@ -88,7 +92,7 @@ public class ReadCoilsAndDiscreteTestCase extends TestCaseSupport {
      */
     public ReadCoilsAndDiscreteTestCase(ServerType serverType, boolean nonZeroOffset, String type,
             Class<Register> storeClass, String spiAddRegisterMethodName, Class<?> addRegisterArgClass)
-                    throws NoSuchMethodException, SecurityException {
+            throws NoSuchMethodException, SecurityException {
         this.serverType = serverType;
         this.nonZeroOffset = nonZeroOffset;
         this.type = type;

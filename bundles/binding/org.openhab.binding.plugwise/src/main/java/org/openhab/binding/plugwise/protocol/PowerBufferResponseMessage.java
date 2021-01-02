@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.plugwise.protocol;
 
@@ -62,22 +66,22 @@ public class PowerBufferResponseMessage extends Message {
                 datapoints[0] = null;
             }
             if (!matcher.group(4).equals("FFFFFFFF")) {
-                datapoints[1] = new Energy(matcher.group(2), Long.parseLong(matcher.group(5), 16), 3600);
+                datapoints[1] = new Energy(matcher.group(4), Long.parseLong(matcher.group(5), 16), 3600);
             } else {
                 datapoints[1] = null;
             }
             if (!matcher.group(6).equals("FFFFFFFF")) {
-                datapoints[2] = new Energy(matcher.group(2), Long.parseLong(matcher.group(7), 16), 3600);
+                datapoints[2] = new Energy(matcher.group(6), Long.parseLong(matcher.group(7), 16), 3600);
             } else {
                 datapoints[2] = null;
             }
             if (!matcher.group(8).equals("FFFFFFFF")) {
-                datapoints[3] = new Energy(matcher.group(2), Long.parseLong(matcher.group(9), 16), 3600);
+                datapoints[3] = new Energy(matcher.group(8), Long.parseLong(matcher.group(9), 16), 3600);
             } else {
                 datapoints[3] = null;
             }
 
-            logAddress = (Integer.parseInt(matcher.group(10), 16) - 278528) / 8;
+            logAddress = (Integer.parseInt(matcher.group(10), 16) - 278528) / 32;
         } else {
             logger.debug("Plugwise protocol PowerBufferResponseMessage error: {} does not match", payLoad);
         }

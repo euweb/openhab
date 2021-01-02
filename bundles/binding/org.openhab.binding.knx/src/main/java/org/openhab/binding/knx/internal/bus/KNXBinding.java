@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.knx.internal.bus;
 
@@ -53,7 +57,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements ProcessListener, KNXConnectionListener {
+public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements ProcessListener, KNXConnectionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -121,7 +125,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
-        logger.debug("Received update (item='{}', state='{}')", itemName, newState.toString());
+        logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
         if (!isEcho(itemName, newState)) {
             writeToKNX(itemName, newState);
         }
@@ -186,7 +190,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
                 && e.getSourceAddr().toString().equalsIgnoreCase(KNXConnection.getLocalSourceAddr()))) {
             readFromKNX(e);
         } else {
-            logger.warn("Ignoring local Event, received from my local Source address {} for Group address {}.",
+            logger.debug("Ignoring local Event, received from my local Source address {} for Group address {}.",
                     e.getSourceAddr().toString(), e.getDestination().toString());
         }
     }
@@ -277,10 +281,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
         logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(),
                 destination.toString());
-    }
-
-    private boolean isStopCommand(byte[] asdu) {
-        return asdu.length > 0 && (asdu[0] == 0x00 || asdu[0] == 0x08);
     }
 
     private boolean isStartStopEnabled(String itemName, GroupAddress destination, Datapoint datapoint) {
@@ -480,6 +480,14 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
             for (Datapoint datapoint : provider.getDatapoints(itemName, typeClass)) {
                 datapoints.add(datapoint);
             }
+        }
+        if (datapoints.isEmpty()) {
+            logger.warn("no compatible datapoint found for item {} ({}), check item configuration", itemName,
+                    typeClass.getName());
+
+        } else {
+            logger.trace("found {} compatible datapoints for item {} ({})", datapoints.size(), itemName,
+                    typeClass.getName());
         }
         return datapoints;
     }

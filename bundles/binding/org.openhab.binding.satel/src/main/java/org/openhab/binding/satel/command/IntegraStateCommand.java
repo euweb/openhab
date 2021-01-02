@@ -1,12 +1,18 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.satel.command;
+
+import java.util.Arrays;
 
 import org.openhab.binding.satel.internal.event.EventDispatcher;
 import org.openhab.binding.satel.internal.event.IntegraStateEvent;
@@ -31,7 +37,7 @@ public class IntegraStateCommand extends SatelCommandBase {
 
     /**
      * Constructs new command instance for specified type of state.
-     * 
+     *
      * @param stateType
      *            type of state
      * @param extended
@@ -48,7 +54,7 @@ public class IntegraStateCommand extends SatelCommandBase {
      *         zones/outputs)
      */
     public boolean isExtended() {
-        return EXTENDED_CMD_PAYLOAD.equals(this.getPayload());
+        return Arrays.equals(EXTENDED_CMD_PAYLOAD, this.getPayload());
     }
 
     /**
@@ -58,7 +64,8 @@ public class IntegraStateCommand extends SatelCommandBase {
     public boolean handleResponse(EventDispatcher eventDispatcher, SatelMessage response) {
         if (super.handleResponse(eventDispatcher, response)) {
             // dispatch event
-            eventDispatcher.dispatchEvent(new IntegraStateEvent(this.stateType, response.getPayload()));
+            eventDispatcher
+                    .dispatchEvent(new IntegraStateEvent(response.getCommand(), response.getPayload(), isExtended()));
             return true;
         } else {
             return false;
@@ -72,25 +79,12 @@ public class IntegraStateCommand extends SatelCommandBase {
             logger.error("Invalid response code: {}", response.getCommand());
             return false;
         }
-        if (!isPayloadLengthValid(response.getPayload().length)) {
-            logger.error("Invalid payload length for this object type {}: {}", this.stateType.getObjectType(),
+        if (response.getPayload().length != this.stateType.getPayloadLength(isExtended())) {
+            logger.error("Invalid payload length for this state type {}: {}", this.stateType,
                     response.getPayload().length);
             return false;
         }
         return true;
-    }
-
-    private boolean isPayloadLengthValid(int length) {
-        switch (this.stateType.getObjectType()) {
-            case PARTITION:
-                return length == 4;
-            case ZONE:
-            case OUTPUT:
-                return isExtended() ? length == 32 : length == 16;
-            case DOORS:
-                return length == 8;
-        }
-        return false;
     }
 
 }

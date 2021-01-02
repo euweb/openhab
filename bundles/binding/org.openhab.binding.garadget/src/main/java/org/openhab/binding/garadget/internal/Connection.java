@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.garadget.internal;
 
@@ -110,6 +114,10 @@ public class Connection {
                     } catch (Exception e) {
                         logger.warn("Unable to parse token response.", e);
                     }
+                }
+                else {
+                    logger.warn("Login failure. Status code = {}", statusCode);
+                    logger.trace("Failure response: {}", responseBody);
                 }
             }
         });
@@ -218,13 +226,25 @@ public class Connection {
                 break;
             case "deleteToken":
                 httpMethod = HTTP_DELETE;
+                if (tokens == null) {
+                    logger.debug("Unable to execute deleteToken command; no tokens exist");
+                    return;
+                }
                 url = String.format(ACCESS_TOKENS_URL, tokens.accessToken);
                 break;
             case "getDevices":
                 httpMethod = HTTP_GET;
+                if (tokens == null) {
+                    logger.debug("Unable to execute getDevices command; no tokens exist");
+                    return;
+                }
                 url = String.format(GET_DEVICES_URL, tokens.accessToken);
                 break;
             default:
+                if (tokens == null) {
+                    logger.debug("Unable to execute {} command; no tokens exist", funcName);
+                    return;
+                }
                 url = String.format(DEVICE_FUNC_URL, device.getId(), funcName, tokens.accessToken);
                 if (command == null) {
                     // retrieve a variable

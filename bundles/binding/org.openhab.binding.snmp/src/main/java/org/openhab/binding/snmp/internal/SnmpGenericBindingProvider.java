@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.snmp.internal;
 
@@ -148,7 +152,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 
             addBindingConfig(item, newConfig);
         } else {
-            logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+            logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
         }
     }
 
@@ -164,7 +168,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
      * <li>OID</li>
      * <li>Value</li>
      * </ul>
-     * 
+     *
      * Parses a SNMP-IN configuration by using the regular expression
      * <code>([0-9.a-zA-Z/]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)</code>.
      * Where the groups should contain the following content:
@@ -176,9 +180,9 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
      * <li>Refresh interval (ms)</li>
      * <li>[Optional]transformation rule</li>
      * </ul>
-     * 
+     *
      * Setting refresh interval to 0 will only receive SNMP traps
-     * 
+     *
      * @param config
      *            - the Configuration that needs to be updated with the parsing
      *            results
@@ -295,9 +299,13 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
         }
     }
 
-    private Address parseAddress(String s) {
-        String address = s.contains("/") ? s : s + "/161";
-        return GenericAddress.parse("udp:" + address);
+    private Address parseAddress(String s) throws BindingConfigParseException {
+        String addressString = s.contains("/") ? s : s + "/161";
+        Address address = GenericAddress.parse("udp:" + addressString);
+        if (address == null) {
+            throw new BindingConfigParseException(getBindingType() + " binding configuration address is invalid: " + s);
+        }
+        return address;
     }
 
     /**
@@ -422,7 +430,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
         return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).refreshInterval : 0;
     }
 
-    static class SnmpBindingConfig extends HashMap<Command, SnmpBindingConfigElement>implements BindingConfig {
+    static class SnmpBindingConfig extends HashMap<Command, SnmpBindingConfigElement> implements BindingConfig {
 
         private static final long serialVersionUID = 4697146075427676116L;
         Class<? extends Item> itemType;

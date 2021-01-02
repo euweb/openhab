@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.modbus.internal;
 
@@ -15,7 +19,7 @@ import org.mockito.stubbing.Answer;
 
 public class ResultCaptor<T> implements Answer<T> {
 
-    private ArrayList<T> results = new ArrayList<T>();
+    private ArrayList<T> results = new ArrayList<>();
     private long waitMillis;
 
     public ResultCaptor(long waitMillis) {

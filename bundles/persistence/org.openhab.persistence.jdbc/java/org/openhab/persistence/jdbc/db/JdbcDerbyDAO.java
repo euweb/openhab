@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.jdbc.db;
 
@@ -65,7 +69,7 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
         sqlTypes.put("ROLLERSHUTTERITEM", "SMALLINT");
         sqlTypes.put("STRINGITEM", "VARCHAR(32000)");
         sqlTypes.put("tablePrimaryValue", "CURRENT_TIMESTAMP");
-        logger.debug("JDBC::initEtendedSqlTypes: Initialize the type array sqlTypes={}", sqlTypes.values());
+        logger.debug("JDBC::initSqlTypes: Initialized the type array sqlTypes={}", sqlTypes.values());
     }
 
     /**
@@ -127,7 +131,7 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
             logger.debug("JDBC::doCreateItemsTableIfNot tableExists={} therefore sql={}", tableExists, sql);
             Yank.execute(sql, null);
         } else {
-            logger.debug("JDBC::doCreateItemsTableIfNot tableExists={}, did no CREATE TABLE", tableExists);
+            logger.debug("JDBC::doCreateItemsTableIfNot tableExists={}, did not CREATE TABLE", tableExists);
         }
         return vo;
     }
@@ -160,7 +164,7 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
         String sql = histItemFilterQueryProvider(filter, numberDecimalcount, table, name);
         List<Object[]> m = Yank.queryObjectArrays(sql, null);
 
-        logger.debug("JDBC::doGetHistItemFilterQuery gor Array length={}", m.size());
+        logger.debug("JDBC::doGetHistItemFilterQuery got Array length={}", m.size());
 
         List<HistoricItem> items = new ArrayList<HistoricItem>();
         for (int i = 0; i < m.size(); i++) {

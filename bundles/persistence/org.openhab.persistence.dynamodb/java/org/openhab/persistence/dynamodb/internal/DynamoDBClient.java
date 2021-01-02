@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.dynamodb.internal;
 
@@ -12,8 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.regions.Region;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 
 /**
@@ -24,11 +30,11 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 public class DynamoDBClient {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBClient.class);
     private DynamoDB dynamo;
-    private AmazonDynamoDBClient client;
+    private AmazonDynamoDB client;
 
-    public DynamoDBClient(AWSCredentials credentials, Region region) {
-        client = new AmazonDynamoDBClient(credentials);
-        client.setRegion(region);
+    public DynamoDBClient(AWSCredentials credentials, Regions region) {
+        client = AmazonDynamoDBClientBuilder.standard().withRegion(region)
+                .withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
         dynamo = new DynamoDB(client);
     }
 
@@ -36,7 +42,7 @@ public class DynamoDBClient {
         this(clientConfig.getCredentials(), clientConfig.getRegion());
     }
 
-    public AmazonDynamoDBClient getDynamoClient() {
+    public AmazonDynamoDB getDynamoClient() {
         return client;
     }
 

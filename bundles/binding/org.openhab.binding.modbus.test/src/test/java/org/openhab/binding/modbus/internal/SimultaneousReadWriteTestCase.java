@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.modbus.internal;
 
@@ -43,7 +47,7 @@ public class SimultaneousReadWriteTestCase extends TestCaseSupport {
 
     @Parameters
     public static List<Object[]> parameters() {
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         for (ServerType serverType : TestCaseSupport.TEST_SERVERS) {
             parameters.add(new Object[] { serverType, new short[] { 5, 5, 5, 5, 5 }, ModbusBindingProvider.TYPE_HOLDING,
                     ModbusBindingProvider.VALUE_TYPE_INT16, new DecimalType(5.0) });

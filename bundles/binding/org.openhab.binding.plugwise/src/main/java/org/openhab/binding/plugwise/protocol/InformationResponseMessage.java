@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.plugwise.protocol;
 
@@ -96,7 +100,7 @@ public class InformationResponseMessage extends Message {
             year = Integer.parseInt(matcher.group(2), 16) + 2000;
             month = Integer.parseInt(matcher.group(3), 16);
             minutes = Integer.parseInt(matcher.group(4), 16);
-            logAddress = (Integer.parseInt(matcher.group(5), 16) - 278528) / 8;
+            logAddress = (Integer.parseInt(matcher.group(5), 16) - 278528) / 32;
             powerState = (matcher.group(6).equals("01"));
             hertz = Integer.parseInt(matcher.group(7), 16);
             hardwareVersion = StringUtils.left(matcher.group(8), 4) + "-" + StringUtils.mid(matcher.group(8), 4, 4)

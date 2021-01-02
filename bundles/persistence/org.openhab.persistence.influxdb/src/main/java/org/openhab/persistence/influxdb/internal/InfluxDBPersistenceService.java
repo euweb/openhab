@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.influxdb.internal;
 
@@ -26,6 +30,7 @@ import org.influxdb.dto.Pong;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult.Result;
 import org.influxdb.dto.QueryResult.Series;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -77,7 +82,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     private static final String DEFAULT_URL = "http://127.0.0.1:8086";
     private static final String DEFAULT_DB = "openhab";
     private static final String DEFAULT_USER = "openhab";
-    private static final String DEFAULT_RETENTION_POLICY = "default";
+    private static final String DEFAULT_RETENTION_POLICY = "autogen";
     private static final String DIGITAL_VALUE_OFF = "0";
     private static final String DIGITAL_VALUE_ON = "1";
     private static final String VALUE_COLUMN_NAME = "value";
@@ -280,13 +285,11 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         List<HistoricItem> historicItems = new ArrayList<HistoricItem>();
 
         StringBuffer query = new StringBuffer();
-        query.append("select ");
-        query.append(VALUE_COLUMN_NAME);
-        query.append(" ");
-        query.append("from ");
+        query.append("select ").append(VALUE_COLUMN_NAME).append(' ').append("from \"").append(retentionPolicy)
+                .append("\".");
 
         if (filter.getItemName() != null) {
-            query.append(filter.getItemName());
+            query.append('"').append(filter.getItemName()).append('"');
         } else {
             query.append("/.*/");
         }
@@ -479,8 +482,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
             value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
         } else if (state instanceof OpenClosedType) {
             value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
-        } else if (state instanceof HSBType) {
-            value = ((HSBType) state).toString();
         } else if (state instanceof DateTimeType) {
             value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
         } else {
@@ -503,6 +504,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         if (itemRegistry != null) {
             try {
                 Item item = itemRegistry.getItem(itemName);
+                if (item instanceof GroupItem) {
+                    item = ((GroupItem) item).getBaseItem();
+                }
                 if (item instanceof ColorItem) {
                     logger.debug("objectToState found a ColorItem {}", valueStr);
                     return new HSBType(valueStr);

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.nest.internal.messages;
 
@@ -29,6 +33,7 @@ public class Camera extends AbstractDevice {
     public static class Event extends AbstractMessagePart {
         private Boolean has_sound;
         private Boolean has_motion;
+        private Boolean has_person;
         private Date start_time;
         private Date end_time;
         private Date urls_expire_time;
@@ -52,6 +57,14 @@ public class Camera extends AbstractDevice {
         @JsonProperty("has_motion")
         public Boolean getHas_motion() {
             return this.has_motion;
+        }
+
+        /**
+         * @return true if a person was detected.
+         */
+        @JsonProperty("has_person")
+        public Boolean getHas_person() {
+            return this.has_person;
         }
 
         /**
@@ -120,6 +133,7 @@ public class Camera extends AbstractDevice {
             builder.appendSuper(super.toString());
             builder.append("has_sound", this.has_sound);
             builder.append("has_motion", this.has_motion);
+            builder.append("has_person", this.has_person);
             builder.append("start_time", this.start_time);
             builder.append("end_time", this.end_time);
             builder.append("urls_expire_time", this.urls_expire_time);

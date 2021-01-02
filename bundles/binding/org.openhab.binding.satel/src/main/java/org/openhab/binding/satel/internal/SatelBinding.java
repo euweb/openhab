@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.satel.internal;
 
@@ -54,6 +58,7 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
     private SatelModule satelModule = null;
     private boolean forceRefresh = false;
     private String textEncoding;
+    private String userCodeOverride = null;
 
     /**
      * {@inheritDoc}
@@ -146,12 +151,20 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
             if (itemConfig != null) {
                 logger.trace("Sending internal command for item {}: {}", itemName, command);
                 SatelCommand satelCmd = itemConfig.convertCommand(command, this.satelModule.getIntegraType(),
-                        this.userCode);
+                        getUserCode());
                 if (satelCmd != null) {
                     this.satelModule.sendCommand(satelCmd);
                 }
                 break;
             }
+        }
+    }
+
+    private String getUserCode() {
+        if (StringUtils.isNotEmpty(this.userCodeOverride)) {
+            return this.userCodeOverride;
+        } else {
+            return this.userCode;
         }
     }
 
@@ -318,7 +331,15 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
      */
     @Override
     public void setUserCode(String userCode) {
-        this.userCode = userCode;
+        this.userCodeOverride = userCode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void resetUserCode() {
+        this.userCodeOverride = null;
     }
 
 }

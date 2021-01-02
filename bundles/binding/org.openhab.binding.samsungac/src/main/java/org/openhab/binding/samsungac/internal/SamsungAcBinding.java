@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.samsungac.internal;
 
@@ -28,14 +32,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * Binding listening OpenHAB bus and send commands to Samsung Air Conditioner
  * devices when command is received.
  *
  * @author Stein Tore Tøsse
+ * @author John Cocula added optional port parameter
  * @since 1.6.0
  */
-public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProvider>implements ManagedService {
+public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(SamsungAcBinding.class);
 
@@ -141,7 +145,6 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
                 }
             } catch (Exception e) {
                 logger.warn("Could not send value: '{}' to property:'{}', try {}/5", value, property, i);
-                e.printStackTrace();
             } finally {
                 i++;
             }
@@ -224,6 +227,13 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
 
             if ("host".equals(parts[1])) {
                 host.setIpAddress(value);
+            }
+            if ("port".equals(parts[1])) {
+                try {
+                    host.setPort(Integer.parseInt(value));
+                } catch (NumberFormatException nfe) {
+                    throw new ConfigurationException("port", "Invalid port number specified '" + value + "'", nfe);
+                }
             }
             if ("mac".equals(parts[1])) {
                 host.setMacAddress(value);

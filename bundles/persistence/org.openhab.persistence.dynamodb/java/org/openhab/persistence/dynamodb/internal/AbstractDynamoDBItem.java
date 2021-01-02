@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.dynamodb.internal;
 
@@ -78,9 +82,10 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
         itemClassToDynamoItemClass.put(ColorItem.class, DynamoDBStringItem.class); // inherited from DimmerItem
     }
 
-    public static final Class<? extends DynamoDBItem<?>> getDynamoItemClass(Class<? extends Item> itemClass)
+    public static final Class<DynamoDBItem<?>> getDynamoItemClass(Class<? extends Item> itemClass)
             throws NullPointerException {
-        Class<? extends DynamoDBItem<?>> dtoclass = itemClassToDynamoItemClass.get(itemClass);
+        @SuppressWarnings("unchecked")
+        Class<DynamoDBItem<?>> dtoclass = (Class<DynamoDBItem<?>>) itemClassToDynamoItemClass.get(itemClass);
         if (dtoclass == null) {
             throw new NullPointerException(String.format("Unknown item class %s", itemClass));
         }
@@ -189,57 +194,9 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
     }
 
     /**
-     * We define all getter and setters as abstract and require the inheritor class implement those. Having the getter
-     * and setter implementations here in the parent class does not work with introspection done by AWS SDK.
+     * We define all getter and setters in the child class implement those. Having the getter
+     * and setter implementations here in the parent class does not work with introspection done by AWS SDK (1.11.56).
      */
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getName()
-     */
-    @Override
-    public abstract String getName();
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getState()
-     */
-    @Override
-    public abstract T getState();
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getTime()
-     */
-    @Override
-    public abstract Date getTime();
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setName(java.lang.String)
-     */
-    @Override
-    public abstract void setName(String name);
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setState(T)
-     */
-    @Override
-    public abstract void setState(T state);
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setTime(java.util.Date)
-     */
-    @Override
-    public abstract void setTime(Date time);
 
     /*
      * (non-Javadoc)
